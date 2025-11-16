@@ -1,3 +1,78 @@
+/* Estilo para ecuaciones lineales con llave */
+.eq-system-block {
+  position: relative;
+  background: var(--color-bg-lightest);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+
+.eq-system {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  margin: 18px 0;
+}
+
+.eq-brace {
+  font-family: 'STIX Two Math', 'Cambria Math', 'Latin Modern Math', serif;
+  font-size: 60px;
+  color: var(--color-accent);
+  line-height: 1;
+  margin-right: 8px;
+  user-select: none;
+}
+
+.eq-system-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.eq-system-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.eq-system-input {
+  width: 38px;
+  height: 28px;
+  border: 2px solid var(--color-bg-light);
+  border-radius: 6px;
+  text-align: center;
+  font-size: 15px;
+  margin-right: 2px;
+  background: rgba(158, 139, 126, 0.05);
+  color: var(--color-text);
+  transition: var(--transition);
+}
+.eq-system-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  background: white;
+}
+.eq-system-equal {
+  font-size: 18px;
+  color: var(--color-accent);
+  margin: 0 6px;
+  font-weight: 600;
+}
+.mathml-small {
+  font-size: 15px !important;
+}
+
+.mathml-input-small {
+  width: 38px !important;
+  height: 26px !important;
+  font-size: 13px !important;
+  padding: 2px !important;
+}
+
+.mathml-mn-small {
+  font-size: 13px !important;
+}
 /* Variables de color */
 :root {
   --color-bg-dark: #3a3d4a;
@@ -124,13 +199,16 @@ body {
 }
 
 /* MathML Matrix Styling */
+
 .mathml-container {
-  display: inline-block;
+  display: block;
   padding: 20px;
   background: white;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: var(--transition);
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .mathml-container:hover {

@@ -13,31 +13,36 @@ function createMathMLMatrix(values, interactive = false, key = null) {
   const mathNS = 'http://www.w3.org/1998/Math/MathML';
   const math = document.createElementNS(mathNS, 'math');
   math.setAttribute('display', 'block');
-  
+
+  // Detect matrix size for styling
+  const isSmall = values.length <= 5 && values[0]?.length <= 5;
+
+  if (isSmall) {
+    math.classList.add('mathml-small');
+  }
+
   const mrow = document.createElementNS(mathNS, 'mrow');
-  
+
   // Opening bracket
   const mo1 = document.createElementNS(mathNS, 'mo');
   mo1.textContent = '(';
   mo1.setAttribute('stretchy', 'true');
   mo1.setAttribute('fence', 'true');
   mrow.appendChild(mo1);
-  
+
   // Matrix table
   const mtable = document.createElementNS(mathNS, 'mtable');
   mtable.setAttribute('rowspacing', '0.5ex');
   mtable.setAttribute('columnspacing', '1em');
-  
+
   for (let i = 0; i < values.length; i++) {
     const mtr = document.createElementNS(mathNS, 'mtr');
     for (let j = 0; j < values[i].length; j++) {
       const mtd = document.createElementNS(mathNS, 'mtd');
-      
+
       if (interactive) {
-        // Create input wrapper
-        const foreignObject = document.createElementNS(mathNS, 'foreignObject');
         const input = document.createElement('input');
-        input.className = 'mathml-input';
+        input.className = isSmall ? 'mathml-input mathml-input-small' : 'mathml-input';
         input.value = values[i][j] || '0';
         input.addEventListener('input', () => {
           if (key && state[key]) {
@@ -48,23 +53,24 @@ function createMathMLMatrix(values, interactive = false, key = null) {
       } else {
         const mn = document.createElementNS(mathNS, 'mn');
         mn.textContent = values[i][j] || '0';
+        if (isSmall) mn.classList.add('mathml-mn-small');
         mtd.appendChild(mn);
       }
-      
+
       mtr.appendChild(mtd);
     }
     mtable.appendChild(mtr);
   }
-  
+
   mrow.appendChild(mtable);
-  
+
   // Closing bracket
   const mo2 = document.createElementNS(mathNS, 'mo');
   mo2.textContent = ')';
   mo2.setAttribute('stretchy', 'true');
   mo2.setAttribute('fence', 'true');
   mrow.appendChild(mo2);
-  
+
   math.appendChild(mrow);
   return math;
 }
@@ -151,42 +157,62 @@ function renderAll(){
   buildVector($('#v-inputs'), 'v')
 }
 
+
 function buildLin(){
-  const n = state.lin.n
-  const A = state.lin.A
-  const b = state.lin.b
-  
-  // Build matrix A with MathML
-  const linA = $('#linA')
-  linA.innerHTML = ''
-  const mathMLContainerA = document.createElement('div')
-  mathMLContainerA.className = 'mathml-container'
-  const mathMLA = createMathMLMatrix(A, true, 'linA')
-  mathMLContainerA.appendChild(mathMLA)
-  linA.appendChild(mathMLContainerA)
-  
-  // Build vector b with MathML
-  const linB = $('#linB')
-  linB.innerHTML = ''
-  const mathMLContainerB = document.createElement('div')
-  mathMLContainerB.className = 'mathml-container'
-  const bMatrix = b.map(val => [val])
-  const mathMLB = createMathMLMatrix(bMatrix, true, 'linB')
-  mathMLContainerB.appendChild(mathMLB)
-  linB.appendChild(mathMLContainerB)
-  
-  // Update event listeners for linear system
-  const inputs = mathMLContainerA.querySelectorAll('input')
-  inputs.forEach((input, idx) => {
-    const i = Math.floor(idx / n)
-    const j = idx % n
-    input.addEventListener('input', () => { A[i][j] = input.value })
-  })
-  
-  const bInputs = mathMLContainerB.querySelectorAll('input')
-  bInputs.forEach((input, idx) => {
-    input.addEventListener('input', () => { b[idx] = input.value })
-  })
+  const n = state.lin.n;
+  const A = state.lin.A;
+  const b = state.lin.b;
+  const eqSystem = document.getElementById('eq-system');
+  eqSystem.innerHTML = '';
+
+  // Llave grande
+  const brace = document.createElement('div');
+  brace.className = 'eq-brace';
+  brace.textContent = '{';
+  eqSystem.appendChild(brace);
+
+  // Filas de ecuaciones
+  const rows = document.createElement('div');
+  rows.className = 'eq-system-rows';
+  for(let i=0; i<n; i++){
+    const row = document.createElement('div');
+    row.className = 'eq-system-row';
+    for(let j=0; j<n; j++){
+      const input = document.createElement('input');
+      input.className = 'eq-system-input';
+      input.value = A[i][j] || '0';
+      input.addEventListener('input', ()=>{ A[i][j] = input.value });
+      row.appendChild(input);
+      // Variable x_j con subíndice
+      const varSpan = document.createElement('span');
+      varSpan.innerHTML = `x<sub>${j+1}</sub>`;
+      varSpan.style.marginRight = '6px';
+      varSpan.style.fontWeight = '500';
+      varSpan.style.fontSize = '15px';
+      varSpan.style.color = 'var(--color-accent)';
+      row.appendChild(varSpan);
+      if(j < n-1){
+        const plus = document.createElement('span');
+        plus.textContent = '+';
+        plus.style.marginRight = '6px';
+        plus.style.fontWeight = '500';
+        plus.style.color = 'var(--color-accent)';
+        row.appendChild(plus);
+      }
+    }
+    // Igual y b_i
+    const eq = document.createElement('span');
+    eq.className = 'eq-system-equal';
+    eq.textContent = '=';
+    row.appendChild(eq);
+    const bInput = document.createElement('input');
+    bInput.className = 'eq-system-input';
+    bInput.value = b[i] || '0';
+    bInput.addEventListener('input', ()=>{ b[i] = bInput.value });
+    row.appendChild(bInput);
+    rows.appendChild(row);
+  }
+  eqSystem.appendChild(rows);
 }
 
 function addLinSize(){
