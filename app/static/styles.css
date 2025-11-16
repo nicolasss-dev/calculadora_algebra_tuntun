@@ -1,10 +1,16 @@
+/*
+  Hoja de estilos para la calculadora web.
+  - Diseños de paneles y navegación tipo pill.
+  - Estilos de matrices (MathML y inputs), sistemas de ecuaciones y vectores.
+  - Estética responsiva y accesible con sombras, transiciones y colores.
+*/
 .eq-brace-svg {
   display: block;
   margin-right: 8px;
   min-width: 32px;
   height: 100%;
 }
-/* Estilo para ecuaciones lineales con llave */
+/* Bloque: ecuaciones lineales con llave */
 .eq-system-block {
   position: relative;
   background: var(--color-bg-lightest);
@@ -79,7 +85,7 @@
 .mathml-mn-small {
   font-size: 13px !important;
 }
-/* Variables de color */
+/* Variables de color y sombras */
 :root {
   --color-bg-dark: #3a3d4a;
   --color-bg-medium: #525561;
@@ -122,7 +128,7 @@ body {
 }
 
 
-/* Pill Navigation Styles */
+/* Navegación tipo pill */
 .pill-nav {
   display: flex;
   position: relative;
@@ -223,7 +229,7 @@ body {
   color: var(--color-accent);
 }
 
-/* MathML Matrix Styling */
+/* Estilos para matrices en MathML e inputs */
 
 .mathml-container {
   display: block;
@@ -701,7 +707,7 @@ select:focus {
   grid-area: bottom;
 }
 
-/* Responsivo */
+/* Adaptación responsiva */
 @media (max-width: 900px) {
   .grid-row {
     grid-template-columns: 1fr;

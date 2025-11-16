@@ -1,6 +1,13 @@
+/*
+  Aplicación frontend para la calculadora (Matrices, Ecuaciones, Vectores).
+  - Renderiza matrices y sistemas en MathML y HTML.
+  - Envía requests a la API FastAPI y muestra resultados.
+  - Gestiona el estado de entrada y opciones de visualización de vectores con Plotly.
+*/
 const $ = (q) => document.querySelector(q)
 const $$ = (q) => Array.from(document.querySelectorAll(q))
 
+// Estado global del frontend
 const state = {
   A: { rows: 2, cols: 2, values: [['0','0'],['0','0']] },
   B: { rows: 2, cols: 2, values: [['0','0'],['0','0']] },
@@ -9,12 +16,13 @@ const state = {
   vec: { mode: 'polar', u: {mag:'1',deg:'0'}, v:{mag:'1',deg:'90'}, show:{parallelogram:true, subtraction:false} }
 }
 
+// Crea una representación MathML de una matriz
 function createMathMLMatrix(values, interactive = false, key = null) {
   const mathNS = 'http://www.w3.org/1998/Math/MathML';
   const math = document.createElementNS(mathNS, 'math');
   math.setAttribute('display', 'block');
 
-  // Detect matrix size for styling
+  // Detecta tamaño de matriz para estilo responsivo
   const isSmall = values.length <= 5 && values[0]?.length <= 5;
 
   if (isSmall) {
@@ -23,14 +31,14 @@ function createMathMLMatrix(values, interactive = false, key = null) {
 
   const mrow = document.createElementNS(mathNS, 'mrow');
 
-  // Opening bracket
+  // Paréntesis de apertura
   const mo1 = document.createElementNS(mathNS, 'mo');
   mo1.textContent = '(';
   mo1.setAttribute('stretchy', 'true');
   mo1.setAttribute('fence', 'true');
   mrow.appendChild(mo1);
 
-  // Matrix table
+  // Tabla de la matriz
   const mtable = document.createElementNS(mathNS, 'mtable');
   mtable.setAttribute('rowspacing', '0.5ex');
   mtable.setAttribute('columnspacing', '1em');
@@ -64,7 +72,7 @@ function createMathMLMatrix(values, interactive = false, key = null) {
 
   mrow.appendChild(mtable);
 
-  // Closing bracket
+  // Paréntesis de cierre
   const mo2 = document.createElementNS(mathNS, 'mo');
   mo2.textContent = ')';
   mo2.setAttribute('stretchy', 'true');
@@ -75,6 +83,7 @@ function createMathMLMatrix(values, interactive = false, key = null) {
   return math;
 }
 
+// Construye UI para matriz editable (A o B)
 function buildMatrix(container, key){
   const m = state[key]
   container.innerHTML = ''
@@ -87,6 +96,7 @@ function buildMatrix(container, key){
   container.appendChild(mathMLContainer);
 }
 
+// Renderiza una vista previa de fracción (a/b) junto a un input
 function renderFractionPreview(wrap, value){
   const old = wrap.querySelector('.frac')
   if(old) old.remove()
@@ -108,6 +118,7 @@ function renderFractionPreview(wrap, value){
   }
 }
 
+// Cambia el tamaño de filas/columnas de una matriz conservando valores
 function resizeMatrix(key, dRows, dCols){
   const m = state[key]
   m.rows = Math.max(1, m.rows + (dRows||0))
@@ -122,6 +133,7 @@ function resizeMatrix(key, dRows, dCols){
   m.values = newVals
 }
 
+// Construye inputs para vector u/v según modo (polar/cartesiano)
 function buildVector(container, key){
   const isPolar = state.vec.mode==='polar'
   container.innerHTML = ''
@@ -140,6 +152,7 @@ function buildVector(container, key){
   }
 }
 
+// Re-renderiza todo el panel (matrices, sistema y vectores)
 function renderAll(){
   buildMatrix($('#matrixA'), 'A')
   buildMatrix($('#matrixB'), 'B')
@@ -158,6 +171,7 @@ function renderAll(){
 }
 
 
+// Construye el bloque de sistema de ecuaciones lineales con una llave SVG
 function buildLin(){
   const n = state.lin.n;
   const A = state.lin.A;
@@ -165,7 +179,7 @@ function buildLin(){
   const eqSystem = document.getElementById('eq-system');
   eqSystem.innerHTML = '';
 
-  // Llave SVG con varios ganchos arriba y abajo
+  // Dibuja llave SVG decorativa a la izquierda del sistema
   const braceHeight = 38 * n + 10;
   const braceSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   braceSVG.setAttribute('width', '32');
@@ -178,7 +192,7 @@ function buildLin(){
   const yTop = 5, yBot = braceHeight-5;
   const yMid = braceHeight/2;
   const yHook = 18;
-  // Path para la llave con ganchos arriba, abajo y piquito central
+  // Path con ganchos y pico central (curvas Bezier/Q)
   const yPico = 16;
   const d = `M ${xRight} ${yTop}
     C ${xLeft} ${yTop}, ${xLeft} ${yTop+yHook}, ${xLeft} ${yMid-yPico}
@@ -192,7 +206,7 @@ function buildLin(){
   braceSVG.appendChild(path);
   eqSystem.appendChild(braceSVG);
 
-  // Filas de ecuaciones
+  // Filas con coeficientes A y términos independientes b
   const rows = document.createElement('div');
   rows.className = 'eq-system-rows';
   for(let i=0; i<n; i++){
@@ -204,7 +218,7 @@ function buildLin(){
       input.value = A[i][j] || '0';
       input.addEventListener('input', ()=>{ A[i][j] = input.value });
       row.appendChild(input);
-      // Variable x_j con subíndice
+      // Muestra variable x_j con subíndice junto a cada coeficiente
       const varSpan = document.createElement('span');
       varSpan.innerHTML = `x<sub>${j+1}</sub>`;
       varSpan.style.marginRight = '6px';
@@ -236,6 +250,7 @@ function buildLin(){
   eqSystem.appendChild(rows);
 }
 
+// Incrementa tamaño del sistema (n → n+1)
 function addLinSize(){
   const n = state.lin.n + 1
   const A = Array.from({length:n}, (_,i)=> Array.from({length:n}, (_,j)=> (state.lin.A[i]&&state.lin.A[i][j])||'0'))
@@ -243,6 +258,7 @@ function addLinSize(){
   state.lin = { n, A, b }
 }
 
+// Decrementa tamaño del sistema (n → n-1, mínimo 2)
 function delLinSize(){
   if(state.lin.n <= 2){ return }
   const n = state.lin.n - 1
@@ -251,6 +267,7 @@ function delLinSize(){
   state.lin = { n, A, b }
 }
 
+// Helper para POST JSON con manejo de errores
 async function postJSON(url, body){
   const res = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) })
   const data = await res.json()
@@ -259,6 +276,7 @@ async function postJSON(url, body){
 }
 
 
+// Pestañas tipo pill con indicador animado y comportamiento responsivo
 function tabSwitch(){
   const tabs = $$('.pill-tab');
   const indicator = $('.pill-indicator');
@@ -286,6 +304,7 @@ function tabSwitch(){
   });
 }
 
+// Registra handlers de UI para edición y ejecución de operaciones de matrices
 function setupMatrixControls(){
   $('#a-add-col').onclick = ()=>{ resizeMatrix('A',0,1); renderAll() }
   $('#a-del-col').onclick = ()=>{ resizeMatrix('A',0,-1); renderAll() }
@@ -326,6 +345,7 @@ function setupMatrixControls(){
   }
 }
 
+// Registra handlers para resolver el sistema por Cramer o por inversa
 function setupLinear(){
   $('#lin-add-size').onclick = ()=>{ addLinSize(); renderAll() }
   $('#lin-del-size').onclick = ()=>{ delLinSize(); renderAll() }
@@ -392,6 +412,7 @@ function setupLinear(){
   }
 }
 
+// Inserta un bloque con título, matriz en MathML y subtítulo opcional
 function appendMatrix(parent, title, mat, subtitle){
   const wrap = document.createElement('div')
   wrap.className = 'matrix-result-block';
@@ -419,6 +440,7 @@ function appendMatrix(parent, title, mat, subtitle){
   parent.appendChild(wrap);
 }
 
+// Actualiza la gráfica de vectores validando entradas y respuesta del servidor
 async function updateVectorPlot() {
   try {
     // Validate vector inputs
@@ -509,6 +531,7 @@ async function updateVectorPlot() {
   }
 }
 
+// Configura UI de vectores, auto-plot y acciones de cálculo
 function setupVectors(){
   const rebuild = ()=>{ buildVector($('#u-inputs'),'u'); buildVector($('#v-inputs'),'v') }
   $('#vec-mode').onchange = (e)=>{ state.vec.mode = e.target.value; rebuild() }
@@ -577,6 +600,7 @@ function setupVectors(){
   }
 }
 
+// Punto de entrada del frontend
 function init(){
   tabSwitch()
   setupMatrixControls()
@@ -588,6 +612,7 @@ function init(){
 
 document.addEventListener('DOMContentLoaded', init)
 
+// Evita selección de texto/drag en el contenedor de la gráfica para mejor UX
 function disableSelectionOnPlot(){
   const el = document.getElementById('vec-plot')
   if(!el) return

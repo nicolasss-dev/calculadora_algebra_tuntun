@@ -1,10 +1,22 @@
+"""Funciones de parseo para convertir entradas de texto en arreglos NumPy.
+
+Admite enteros, decimales y fracciones `a/b` con signo.
+"""
+
 from fractions import Fraction
 from typing import List
 import numpy as np
 
 
 def parse_number(text: str) -> float:
-    """Convierte una cadena en número. Acepta entero, decimal o fracción "a/b" con signo."""
+    """Convierte una cadena en `float`.
+
+    Acepta:
+    - Enteros y decimales (p. ej. "3", "-2.5").
+    - Fracciones en formato `a/b` (p. ej. "-3/4"). Usa `fractions.Fraction`.
+
+    Errores: lanza `ValueError` si el texto está vacío o no se puede interpretar.
+    """
     if text is None:
         raise ValueError("Campo vacío no válido")
     s = str(text).strip()
@@ -19,7 +31,12 @@ def parse_number(text: str) -> float:
 
 
 def parse_matrix(cells: List[List[str]]) -> np.ndarray:
-    """Convierte una grilla de strings a np.ndarray(float) con validaciones de tamaño."""
+    """Convierte una grilla de strings a `np.ndarray(float)` validando dimensiones.
+
+    Validaciones:
+    - No vacío; filas y columnas consistentes.
+    - Cada celda debe ser interpretable por `parse_number`.
+    """
     if cells is None or not isinstance(cells, list) or len(cells) == 0:
         raise ValueError("Matriz vacía no válida")
     rows = len(cells)
@@ -37,7 +54,10 @@ def parse_matrix(cells: List[List[str]]) -> np.ndarray:
 
 
 def parse_vector(cells: List[str]) -> np.ndarray:
-    """Convierte una lista de strings a vector columna np.ndarray(float)."""
+    """Convierte una lista de strings a vector `np.ndarray(float)` de tamaño `n`.
+
+    Útil para el vector `b` de sistemas lineales.
+    """
     if cells is None or not isinstance(cells, list) or len(cells) == 0:
         raise ValueError("Vector b vacío no válido")
     data = np.zeros((len(cells),), dtype=float)

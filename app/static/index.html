@@ -12,6 +12,7 @@
   </head>
   <body>
     <div class="app">
+      <!-- Navegación principal por pestañas -->
       <nav class="pill-nav">
         <button data-tab="matrices" class="pill-tab active">Matrices</button>
         <button data-tab="ecuaciones" class="pill-tab">Ecuaciones lineales</button>
@@ -19,6 +20,7 @@
         <span class="pill-indicator"></span>
       </nav>
 
+      <!-- Panel de operaciones con matrices (A, B y resultados) -->
       <section id="matrices" class="panel active">
         <div class="grid-row">
           <div class="matrix-block">
@@ -79,6 +81,7 @@
         </div>
       </section>
 
+      <!-- Panel para sistemas de ecuaciones lineales (Cramer e Inversa) -->
       <section id="ecuaciones" class="panel">
         <div class="eq-row">
           <div class="eq-system-block">
@@ -102,6 +105,7 @@
         </div>
       </section>
 
+      <!-- Panel de vectores 2D con opciones de graficación Plotly -->
       <section id="vectores" class="panel">
         <div class="vec-controls">
           <div>
