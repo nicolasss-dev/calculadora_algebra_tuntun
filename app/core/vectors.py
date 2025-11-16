@@ -226,7 +226,8 @@ def plot_data(u: np.ndarray, v: np.ndarray, show: Dict[str, Any]):
 
     # Visualización de la resta (triángulo) opcional
     if show.get("subtraction", False):
-        arrow(v[0], v[1], d[0], d[1], "u−v", color="purple", width=2)
+        # Dibuja la resta desde el origen hasta u-v
+        arrow(0, 0, d[0], d[1], "u−v", color="purple", width=2)
 
 
     # Estilo por defecto de la rejilla
