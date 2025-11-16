@@ -151,96 +151,42 @@ function renderAll(){
   buildVector($('#v-inputs'), 'v')
 }
 
-function createLinearSystemMathML(A, b, n) {
-  const mathNS = 'http://www.w3.org/1998/Math/MathML';
-  const container = document.createElement('div');
-  container.className = 'linear-system-container';
-  
-  for (let i = 0; i < n; i++) {
-    const row = document.createElement('div');
-    row.className = 'linear-equation-row';
-    
-    const math = document.createElementNS(mathNS, 'math');
-    math.setAttribute('display', 'block');
-    
-    const mrow = document.createElementNS(mathNS, 'mrow');
-    
-    // Left brace
-    const mo1 = document.createElementNS(mathNS, 'mo');
-    mo1.textContent = '{';
-    mo1.setAttribute('stretchy', 'true');
-    mo1.setAttribute('fence', 'true');
-    if (i === 0) {
-      mrow.appendChild(mo1);
-    } else {
-      const spacer = document.createElementNS(mathNS, 'mspace');
-      spacer.setAttribute('width', '1.5em');
-      mrow.appendChild(spacer);
-    }
-    
-    // Build equation: a₁₁x₁ + a₁₂x₂ + ... = b₁
-    for (let j = 0; j < n; j++) {
-      // Coefficient input
-      const input = document.createElement('input');
-      input.className = 'mathml-input linear-coeff';
-      input.value = (A[i] && A[i][j]) || '0';
-      input.addEventListener('input', () => { A[i][j] = input.value });
-      mrow.appendChild(input);
-      
-      // Variable xⱼ with subscript
-      const msub = document.createElementNS(mathNS, 'msub');
-      const mi = document.createElementNS(mathNS, 'mi');
-      mi.textContent = 'x';
-      const mn = document.createElementNS(mathNS, 'mn');
-      mn.textContent = (j + 1).toString();
-      msub.appendChild(mi);
-      msub.appendChild(mn);
-      mrow.appendChild(msub);
-      
-      // Plus sign (except for last term)
-      if (j < n - 1) {
-        const mo = document.createElementNS(mathNS, 'mo');
-        mo.textContent = '+';
-        mrow.appendChild(mo);
-      }
-    }
-    
-    // Equals sign
-    const moEq = document.createElementNS(mathNS, 'mo');
-    moEq.textContent = '=';
-    mrow.appendChild(moEq);
-    
-    // Right side (b value) input
-    const bInput = document.createElement('input');
-    bInput.className = 'mathml-input linear-result';
-    bInput.value = b[i] || '0';
-    bInput.addEventListener('input', () => { b[i] = bInput.value });
-    mrow.appendChild(bInput);
-    
-    math.appendChild(mrow);
-    row.appendChild(math);
-    container.appendChild(row);
-  }
-  
-  return container;
-}
-
 function buildLin(){
   const n = state.lin.n
   const A = state.lin.A
   const b = state.lin.b
   
-  // Build linear system with MathML
+  // Build matrix A with MathML
   const linA = $('#linA')
   linA.innerHTML = ''
-  const systemContainer = createLinearSystemMathML(A, b, n)
-  linA.appendChild(systemContainer)
+  const mathMLContainerA = document.createElement('div')
+  mathMLContainerA.className = 'mathml-container'
+  const mathMLA = createMathMLMatrix(A, true, 'linA')
+  mathMLContainerA.appendChild(mathMLA)
+  linA.appendChild(mathMLContainerA)
   
-  // Hide linB as it's now integrated
+  // Build vector b with MathML
   const linB = $('#linB')
-  if (linB) {
-    linB.style.display = 'none'
-  }
+  linB.innerHTML = ''
+  const mathMLContainerB = document.createElement('div')
+  mathMLContainerB.className = 'mathml-container'
+  const bMatrix = b.map(val => [val])
+  const mathMLB = createMathMLMatrix(bMatrix, true, 'linB')
+  mathMLContainerB.appendChild(mathMLB)
+  linB.appendChild(mathMLContainerB)
+  
+  // Update event listeners for linear system
+  const inputs = mathMLContainerA.querySelectorAll('input')
+  inputs.forEach((input, idx) => {
+    const i = Math.floor(idx / n)
+    const j = idx % n
+    input.addEventListener('input', () => { A[i][j] = input.value })
+  })
+  
+  const bInputs = mathMLContainerB.querySelectorAll('input')
+  bInputs.forEach((input, idx) => {
+    input.addEventListener('input', () => { b[idx] = input.value })
+  })
 }
 
 function addLinSize(){

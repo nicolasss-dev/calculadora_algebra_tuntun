@@ -95,37 +95,6 @@ body {
   align-items: start;
 }
 
-.eq-main {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 24px;
-  align-items: start;
-}
-
-.eq-system-block {
-  background: var(--color-bg-lightest);
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  transition: var(--transition);
-}
-
-.eq-system-block:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-
-.eq-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-width: 200px;
-}
-
-.eq-result {
-  margin-top: 24px;
-}
-
 .eq-row {
   display: grid;
   grid-template-columns: 1fr 160px 240px;
@@ -270,77 +239,6 @@ body {
   color: var(--color-accent);
   font-size: 15px;
   border: 2px solid rgba(158, 139, 126, 0.3);
-}
-
-/* Linear System Styling */
-.linear-system-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.linear-equation-row {
-  display: flex;
-  align-items: center;
-  min-height: 50px;
-}
-
-.linear-equation-row math {
-  font-size: 20px;
-  color: var(--color-text);
-}
-
-.linear-equation-row mo {
-  font-size: 36px;
-  color: var(--color-accent);
-  margin: 0 8px;
-  font-weight: 200;
-}
-
-.linear-equation-row mo[fence="true"] {
-  font-size: 120px;
-  line-height: 1;
-  margin-right: 12px;
-}
-
-.linear-equation-row mi {
-  font-size: 20px;
-  color: var(--color-text);
-  font-style: italic;
-  margin: 0 2px;
-}
-
-.linear-equation-row msub {
-  margin: 0 4px;
-}
-
-.linear-equation-row msub mi {
-  font-size: 20px;
-  color: var(--color-text);
-}
-
-.linear-equation-row msub mn {
-  font-size: 14px;
-  color: var(--color-accent);
-}
-
-.linear-equation-row input.mathml-input {
-  width: 65px;
-  height: 36px;
-  margin: 0 6px;
-}
-
-.linear-equation-row input.linear-coeff {
-  background: rgba(158, 139, 126, 0.08);
-}
-
-.linear-equation-row input.linear-result {
-  background: rgba(122, 109, 102, 0.12);
-  border-color: var(--color-accent);
 }
 
 .matrix {
@@ -708,31 +606,11 @@ select:focus {
   .eq-row {
     grid-template-columns: 1fr;
   }
-  .eq-main {
-    grid-template-columns: 1fr;
-  }
   .vec-inputs {
     grid-template-columns: 1fr;
   }
   .app {
     padding: 16px;
-  }
-  
-  .linear-equation-row math {
-    font-size: 16px;
-  }
-  
-  .linear-equation-row mo {
-    font-size: 28px;
-  }
-  
-  .linear-equation-row mo[fence="true"] {
-    font-size: 90px;
-  }
-  
-  .linear-equation-row input.mathml-input {
-    width: 55px;
-    height: 32px;
   }
   
   .mathml-container {

@@ -79,21 +79,23 @@
       </section>
 
       <section id="ecuaciones" class="panel">
-        <div class="eq-main">
-          <div class="eq-system-block">
-            <div id="linA"></div>
+        <div class="eq-row">
+          <div class="matrix-block">
+            <div class="matrix-title">A</div>
+            <div class="matrix" id="linA"></div>
             <div class="controls bottom">
               <button id="lin-del-size">- tamaño</button>
               <button id="lin-add-size">+ tamaño</button>
             </div>
           </div>
-          <div class="eq-controls">
+          <div class="vector-block">
+            <div class="matrix-title">b</div>
+            <div class="vector" id="linB"></div>
+          </div>
+          <div class="ops">
             <button id="solve-cramer">Resolver por Cramer</button>
             <button id="solve-inv">Resolver por Inversa</button>
           </div>
-        </div>
-        <div style="display:none;">
-          <div class="vector" id="linB"></div>
         </div>
         <div class="eq-result">
           <div class="det-line" id="lin-det"></div>
