@@ -123,6 +123,124 @@ body {
   color: var(--color-accent);
 }
 
+/* MathML Matrix Styling */
+.mathml-container {
+  display: inline-block;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: var(--transition);
+}
+
+.mathml-container:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.mathml-container math {
+  font-size: 22px;
+  color: var(--color-text);
+  font-family: 'STIX Two Math', 'Cambria Math', 'Latin Modern Math', 'Times New Roman', serif;
+}
+
+.mathml-container mo {
+  font-size: 40px;
+  color: var(--color-accent);
+  font-weight: 200;
+  padding: 0 8px;
+  vertical-align: middle;
+}
+
+.mathml-container mo[fence="true"] {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.mathml-container mtable {
+  margin: 0 12px;
+  vertical-align: middle;
+}
+
+.mathml-container mtd {
+  padding: 10px 14px;
+  text-align: center;
+  min-width: 70px;
+  vertical-align: middle;
+}
+
+.mathml-container mn {
+  font-size: 20px;
+  color: var(--color-text);
+  font-weight: 500;
+  font-family: 'STIX Two Math', 'Cambria Math', 'Latin Modern Math', 'Times New Roman', serif;
+}
+
+.mathml-container input.mathml-input {
+  width: 75px;
+  height: 40px;
+  border: 2px solid var(--color-bg-light);
+  border-radius: 8px;
+  padding: 8px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  transition: var(--transition);
+  background: rgba(158, 139, 126, 0.05);
+  color: var(--color-text);
+  font-family: 'STIX Two Math', 'Cambria Math', 'Latin Modern Math', 'Times New Roman', serif;
+}
+
+.mathml-container input.mathml-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(158, 139, 126, 0.15);
+  transform: scale(1.02);
+}
+
+.mathml-container input.mathml-input:hover {
+  border-color: var(--color-accent);
+  background: white;
+  transform: scale(1.01);
+}
+
+.mathml-container.result {
+  background: linear-gradient(135deg, rgba(158, 139, 126, 0.08) 0%, rgba(158, 139, 126, 0.15) 100%);
+  border: 3px solid var(--color-bg-light);
+  padding: 24px;
+}
+
+.mathml-container.result mo {
+  color: var(--color-accent);
+  font-weight: 300;
+}
+
+.mathml-container.result mn {
+  color: var(--color-accent);
+  font-weight: 600;
+  font-size: 22px;
+}
+
+.matrix-result-block {
+  margin: 16px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  border-left: 5px solid var(--color-accent);
+  animation: slideIn 0.4s ease;
+}
+
+.matrix-subtitle {
+  margin-top: 16px;
+  padding: 12px 16px;
+  background: rgba(158, 139, 126, 0.2);
+  border-radius: 8px;
+  font-weight: 600;
+  color: var(--color-accent);
+  font-size: 15px;
+  border: 2px solid rgba(158, 139, 126, 0.3);
+}
+
 .matrix {
   display: inline-grid;
   gap: 0;
@@ -493,5 +611,68 @@ select:focus {
   }
   .app {
     padding: 16px;
+  }
+  
+  .mathml-container {
+    padding: 12px;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  
+  .mathml-container math {
+    font-size: 18px;
+  }
+  
+  .mathml-container mo {
+    font-size: 32px;
+  }
+  
+  .mathml-container mo[fence="true"] {
+    font-size: 38px;
+  }
+  
+  .mathml-container mn {
+    font-size: 16px;
+  }
+  
+  .mathml-container input.mathml-input {
+    width: 60px;
+    height: 34px;
+    font-size: 15px;
+  }
+  
+  .mathml-container mtd {
+    padding: 6px 8px;
+    min-width: 55px;
+  }
+}
+
+@media (max-width: 600px) {
+  .mathml-container math {
+    font-size: 16px;
+  }
+  
+  .mathml-container mo {
+    font-size: 28px;
+  }
+  
+  .mathml-container mo[fence="true"] {
+    font-size: 34px;
+  }
+  
+  .mathml-container mn {
+    font-size: 14px;
+  }
+  
+  .mathml-container input.mathml-input {
+    width: 50px;
+    height: 30px;
+    font-size: 14px;
+    padding: 4px;
+  }
+  
+  .mathml-container mtd {
+    padding: 4px 6px;
+    min-width: 45px;
   }
 }

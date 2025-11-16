@@ -9,26 +9,76 @@ const state = {
   vec: { mode: 'polar', u: {mag:'1',deg:'0'}, v:{mag:'1',deg:'90'}, show:{parallelogram:true, subtraction:false} }
 }
 
+function createMathMLMatrix(values, interactive = false, key = null) {
+  const mathNS = 'http://www.w3.org/1998/Math/MathML';
+  const math = document.createElementNS(mathNS, 'math');
+  math.setAttribute('display', 'block');
+  
+  const mrow = document.createElementNS(mathNS, 'mrow');
+  
+  // Opening bracket
+  const mo1 = document.createElementNS(mathNS, 'mo');
+  mo1.textContent = '(';
+  mo1.setAttribute('stretchy', 'true');
+  mo1.setAttribute('fence', 'true');
+  mrow.appendChild(mo1);
+  
+  // Matrix table
+  const mtable = document.createElementNS(mathNS, 'mtable');
+  mtable.setAttribute('rowspacing', '0.5ex');
+  mtable.setAttribute('columnspacing', '1em');
+  
+  for (let i = 0; i < values.length; i++) {
+    const mtr = document.createElementNS(mathNS, 'mtr');
+    for (let j = 0; j < values[i].length; j++) {
+      const mtd = document.createElementNS(mathNS, 'mtd');
+      
+      if (interactive) {
+        // Create input wrapper
+        const foreignObject = document.createElementNS(mathNS, 'foreignObject');
+        const input = document.createElement('input');
+        input.className = 'mathml-input';
+        input.value = values[i][j] || '0';
+        input.addEventListener('input', () => {
+          if (key && state[key]) {
+            state[key].values[i][j] = input.value;
+          }
+        });
+        mtd.appendChild(input);
+      } else {
+        const mn = document.createElementNS(mathNS, 'mn');
+        mn.textContent = values[i][j] || '0';
+        mtd.appendChild(mn);
+      }
+      
+      mtr.appendChild(mtd);
+    }
+    mtable.appendChild(mtr);
+  }
+  
+  mrow.appendChild(mtable);
+  
+  // Closing bracket
+  const mo2 = document.createElementNS(mathNS, 'mo');
+  mo2.textContent = ')';
+  mo2.setAttribute('stretchy', 'true');
+  mo2.setAttribute('fence', 'true');
+  mrow.appendChild(mo2);
+  
+  math.appendChild(mrow);
+  return math;
+}
+
 function buildMatrix(container, key){
   const m = state[key]
   container.innerHTML = ''
-  container.style.gridTemplateColumns = `repeat(${m.cols}, 56px)`
-  for(let i=0;i<m.rows;i++){
-    for(let j=0;j<m.cols;j++){
-      const wrap = document.createElement('div')
-      wrap.style.display = 'flex'
-      wrap.style.alignItems = 'center'
-      const input = document.createElement('input')
-      input.value = (m.values[i] && m.values[i][j]) || '0'
-      input.addEventListener('input',()=>{
-        m.values[i][j] = input.value
-        renderFractionPreview(wrap, input.value)
-      })
-      wrap.appendChild(input)
-      renderFractionPreview(wrap, input.value)
-      container.appendChild(wrap)
-    }
-  }
+  
+  // Create MathML representation
+  const mathMLContainer = document.createElement('div');
+  mathMLContainer.className = 'mathml-container';
+  const mathML = createMathMLMatrix(m.values, true, key);
+  mathMLContainer.appendChild(mathML);
+  container.appendChild(mathMLContainer);
 }
 
 function renderFractionPreview(wrap, value){
@@ -87,7 +137,15 @@ function buildVector(container, key){
 function renderAll(){
   buildMatrix($('#matrixA'), 'A')
   buildMatrix($('#matrixB'), 'B')
-  if(state.R.rows>0) buildMatrix($('#matrixR'), 'R')
+  if(state.R.rows>0) {
+    const container = $('#matrixR')
+    container.innerHTML = ''
+    const mathMLContainer = document.createElement('div')
+    mathMLContainer.className = 'mathml-container result'
+    const mathML = createMathMLMatrix(state.R.values, false)
+    mathMLContainer.appendChild(mathML)
+    container.appendChild(mathMLContainer)
+  }
   buildLin()
   buildVector($('#u-inputs'), 'u')
   buildVector($('#v-inputs'), 'v')
@@ -97,25 +155,38 @@ function buildLin(){
   const n = state.lin.n
   const A = state.lin.A
   const b = state.lin.b
+  
+  // Build matrix A with MathML
   const linA = $('#linA')
   linA.innerHTML = ''
-  linA.style.gridTemplateColumns = `repeat(${n}, 56px)`
-  for(let i=0;i<n;i++){
-    for(let j=0;j<n;j++){
-      const input = document.createElement('input')
-      input.value = (A[i] && A[i][j]) || '0'
-      input.addEventListener('input', ()=>{ A[i][j] = input.value })
-      linA.appendChild(input)
-    }
-  }
+  const mathMLContainerA = document.createElement('div')
+  mathMLContainerA.className = 'mathml-container'
+  const mathMLA = createMathMLMatrix(A, true, 'linA')
+  mathMLContainerA.appendChild(mathMLA)
+  linA.appendChild(mathMLContainerA)
+  
+  // Build vector b with MathML
   const linB = $('#linB')
   linB.innerHTML = ''
-  for(let i=0;i<n;i++){
-    const input = document.createElement('input')
-    input.value = b[i] || '0'
-    input.addEventListener('input', ()=>{ b[i] = input.value })
-    linB.appendChild(input)
-  }
+  const mathMLContainerB = document.createElement('div')
+  mathMLContainerB.className = 'mathml-container'
+  const bMatrix = b.map(val => [val])
+  const mathMLB = createMathMLMatrix(bMatrix, true, 'linB')
+  mathMLContainerB.appendChild(mathMLB)
+  linB.appendChild(mathMLContainerB)
+  
+  // Update event listeners for linear system
+  const inputs = mathMLContainerA.querySelectorAll('input')
+  inputs.forEach((input, idx) => {
+    const i = Math.floor(idx / n)
+    const j = idx % n
+    input.addEventListener('input', () => { A[i][j] = input.value })
+  })
+  
+  const bInputs = mathMLContainerB.querySelectorAll('input')
+  bInputs.forEach((input, idx) => {
+    input.addEventListener('input', () => { b[idx] = input.value })
+  })
 }
 
 function addLinSize(){
@@ -258,30 +329,29 @@ function setupLinear(){
 
 function appendMatrix(parent, title, mat, subtitle){
   const wrap = document.createElement('div')
-  const ttl = document.createElement('div'); ttl.className='matrix-title'; ttl.textContent=title
-  wrap.appendChild(ttl)
-  const grid = document.createElement('div'); grid.className='matrix'
-  if(Array.isArray(mat) && mat.length>0){
-    const rows = mat.length
-    const cols = mat[0].length
-    grid.style.gridTemplateColumns = `repeat(${cols}, 56px)`
-    for(let i=0;i<rows;i++){
-      for(let j=0;j<cols;j++){
-        const input = document.createElement('input')
-        input.value = String(mat[i][j])
-        input.disabled = true
-        grid.appendChild(input)
-      }
-    }
+  wrap.className = 'matrix-result-block';
+  
+  const ttl = document.createElement('div');
+  ttl.className = 'matrix-title';
+  ttl.textContent = title;
+  wrap.appendChild(ttl);
+  
+  if (Array.isArray(mat) && mat.length > 0) {
+    const mathMLContainer = document.createElement('div');
+    mathMLContainer.className = 'mathml-container result';
+    const mathML = createMathMLMatrix(mat, false);
+    mathMLContainer.appendChild(mathML);
+    wrap.appendChild(mathMLContainer);
   }
-  wrap.appendChild(grid)
-  if(subtitle){
-    const st = document.createElement('div')
-    st.style.marginTop = '4px'
-    st.textContent = subtitle
-    wrap.appendChild(st)
+  
+  if (subtitle) {
+    const st = document.createElement('div');
+    st.className = 'matrix-subtitle';
+    st.textContent = subtitle;
+    wrap.appendChild(st);
   }
-  parent.appendChild(wrap)
+  
+  parent.appendChild(wrap);
 }
 
 async function updateVectorPlot() {
