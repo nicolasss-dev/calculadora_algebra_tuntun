@@ -1,0 +1,49 @@
+.app{display:flex;flex-direction:column;gap:12px;padding:12px}
+.tabs{display:flex;gap:8px}
+.tab{padding:6px 10px;border:1px solid #000;background:#fff}
+.tab.active{outline:2px solid #000}
+.panel{display:none;gap:12px}
+.panel.active{display:block}
+.grid-row{display:grid;grid-template-columns:1fr 1fr minmax(220px,260px);gap:12px;align-items:start}
+.eq-row{display:grid;grid-template-columns:1fr 160px 240px;gap:12px;align-items:start}
+.matrix-block,.vector-block,.result-block{position:relative}
+.matrix-title{font-size:14px;margin-bottom:6px}
+.matrix{display:inline-grid;gap:0;border:1px solid #000}
+.matrix input{width:56px;height:28px;border:1px solid #000;border-right:0;border-bottom:0;padding:2px;box-sizing:border-box}
+.matrix input:last-child{border-right:1px solid #000}
+.controls.right{display:flex;flex-direction:column;gap:6px}
+.controls.bottom{display:flex;gap:6px}
+.ops{display:flex;flex-direction:column;gap:12px;min-width:220px}
+.spacer{height:12px}
+.result-block .matrix{margin-top:6px}
+.scalar{margin-top:8px}
+.error{margin-top:8px}
+.vector{display:grid;grid-auto-rows:28px;gap:0;border:1px solid #000}
+.vector input{width:56px;height:28px;border:1px solid #000;border-right:0;border-bottom:0;padding:2px;box-sizing:border-box}
+.ax-list{display:grid;gap:8px;margin-top:8px}
+.solution{margin-top:8px}
+.vec-controls{display:flex;flex-direction:column;gap:12px}
+.vec-inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.plot{width:100%;height:420px;border:1px solid #000}
+.plot#vec-plot{user-select:none;-webkit-user-select:none;cursor:default}
+#vec-plot *{user-select:none;-webkit-user-select:none;cursor:default}
+.frac{display:grid;grid-template-rows:auto auto;grid-template-columns:auto;align-items:center;justify-items:center;margin-left:4px}
+.frac .num{line-height:1}
+.frac .den{line-height:1;border-top:1px solid #000;margin-top:2px}
+
+/* Rejilla interna para cada bloque de matriz */
+.matrix-block{display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;grid-template-areas:"title title" "matrix right" "bottom bottom";column-gap:8px;row-gap:6px}
+.matrix-block .matrix-title{grid-area:title}
+.matrix-block .matrix{grid-area:matrix}
+.matrix-block .controls.right{grid-area:right;align-self:start}
+.matrix-block .controls.bottom{grid-area:bottom}
+
+/* Pequeños márgenes entre controles */
+button{cursor:pointer}
+.controls.right button,.controls.bottom button,.ops button,.ops select{margin:2px 0}
+
+/* Responsivo */
+@media (max-width: 900px){
+    .grid-row{grid-template-columns:1fr}
+    .eq-row{grid-template-columns:1fr}
+}

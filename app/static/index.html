@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Calculadora de Matrices, Ecuaciones y Vectores</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+  </head>
+  <body>
+    <div class="app">
+      <nav class="tabs">
+        <button data-tab="matrices" class="tab active">Matrices</button>
+        <button data-tab="ecuaciones" class="tab">Ecuaciones lineales</button>
+        <button data-tab="vectores" class="tab">Vectores</button>
+      </nav>
+
+      <section id="matrices" class="panel active">
+        <div class="grid-row">
+          <div class="matrix-block">
+            <div class="matrix-title">A</div>
+            <div class="matrix" id="matrixA"></div>
+            <div class="controls right">
+              <button id="a-add-col">+Col</button>
+              <button id="a-del-col">-Col</button>
+            </div>
+            <div class="controls bottom">
+              <button id="a-add-row">+Fila</button>
+              <button id="a-del-row">-Fila</button>
+            </div>
+          </div>
+          <div class="matrix-block">
+            <div class="matrix-title">B</div>
+            <div class="matrix" id="matrixB"></div>
+            <div class="controls right">
+              <button id="b-add-col">+Col</button>
+              <button id="b-del-col">-Col</button>
+            </div>
+            <div class="controls bottom">
+              <button id="b-add-row">+Fila</button>
+              <button id="b-del-row">-Fila</button>
+            </div>
+          </div>
+          <div class="ops">
+            <div>
+              <label>Operación binaria</label>
+              <select id="op-bin">
+                <option value="add">Suma A + B</option>
+                <option value="sub">Resta A − B</option>
+                <option value="mul">Multiplicación A × B</option>
+              </select>
+              <button id="run-bin">Calcular</button>
+            </div>
+            <div class="spacer"></div>
+            <div>
+              <label>Operación unaria</label>
+              <select id="op-uni">
+                <option value="det">Determinante</option>
+                <option value="inv">Inversa</option>
+                <option value="trans">Traspuesta</option>
+              </select>
+              <select id="op-uni-target">
+                <option value="A">Matriz A</option>
+                <option value="B">Matriz B</option>
+              </select>
+              <button id="run-uni">Calcular</button>
+            </div>
+          </div>
+        </div>
+        <div class="result-block">
+          <div class="matrix-title">Resultado</div>
+          <div class="matrix" id="matrixR"></div>
+          <div class="scalar" id="scalarR"></div>
+          <div class="error" id="matrix-error"></div>
+        </div>
+      </section>
+
+      <section id="ecuaciones" class="panel">
+        <div class="eq-row">
+          <div class="matrix-block">
+            <div class="matrix-title">A</div>
+            <div class="matrix" id="linA"></div>
+            <div class="controls bottom">
+              <button id="lin-del-size">- tamaño</button>
+              <button id="lin-add-size">+ tamaño</button>
+            </div>
+          </div>
+          <div class="vector-block">
+            <div class="matrix-title">b</div>
+            <div class="vector" id="linB"></div>
+          </div>
+          <div class="ops">
+            <button id="solve-cramer">Resolver por Cramer</button>
+            <button id="solve-inv">Resolver por Inversa</button>
+          </div>
+        </div>
+        <div class="eq-result">
+          <div class="det-line" id="lin-det"></div>
+          <div class="ax-list" id="lin-ax"></div>
+          <div class="solution" id="lin-solution"></div>
+          <div class="error" id="lin-error"></div>
+        </div>
+      </section>
+
+      <section id="vectores" class="panel">
+        <div class="vec-controls">
+          <div>
+            <label>Entrada</label>
+            <select id="vec-mode">
+              <option value="polar">Magnitud + Ángulo (°)</option>
+              <option value="cart">Componentes (x, y)</option>
+            </select>
+          </div>
+          <div class="vec-inputs">
+            <div class="vec-group">
+              <div class="matrix-title">Vector u</div>
+              <div id="u-inputs"></div>
+            </div>
+            <div class="vec-group">
+              <div class="matrix-title">Vector v</div>
+              <div id="v-inputs"></div>
+            </div>
+          </div>
+          <div class="vec-toggles">
+            <label><input type="checkbox" id="show-parallelogram" checked /> Ver paralelogramo (suma)</label>
+            <label><input type="checkbox" id="show-subtraction" /> Ver triángulo (resta)</label>
+          </div>
+          <button id="vec-run">Calcular y graficar</button>
+        </div>
+        <div class="vec-results">
+          <div class="vec-numbers" id="vec-numbers"></div>
+          <div id="vec-plot" class="plot"></div>
+          <div class="error" id="vec-error"></div>
+        </div>
+      </section>
+    </div>
+    <script src="/static/app.js"></script>
+  </body>
+  </html>

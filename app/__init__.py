@@ -1,0 +1,1 @@
+"""Aplicación FastAPI para matrices, ecuaciones y vectores."""
