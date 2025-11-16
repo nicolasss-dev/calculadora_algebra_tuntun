@@ -450,6 +450,18 @@ function appendMatrix(parent, title, mat, subtitle){
 
 // Actualiza la gráfica de vectores validando entradas y respuesta del servidor
 async function updateVectorPlot() {
+      // Corregir el vector de resta para que salga desde el origen
+      if (data.plotSpec && Array.isArray(data.plotSpec.data)) {
+        data.plotSpec.data.forEach(trace => {
+          if (trace.name && (trace.name.includes('u-v') || trace.name.includes('u−v'))) {
+            // Si el vector de resta no empieza en el origen, forzamos que empiece en (0,0)
+            if (Array.isArray(trace.x) && Array.isArray(trace.y)) {
+              trace.x[0] = 0;
+              trace.y[0] = 0;
+            }
+          }
+        });
+      }
   try {
     // Validate vector inputs
     if (!state.vec.u || !state.vec.v) {
