@@ -404,12 +404,40 @@ function setupVectors(){
       mk('v(x,y)', data.v2.xy.map(n=>Number(n).toFixed(6)).join(', '))
       mk('u+v', data.sum.map(n=>Number(n).toFixed(6)).join(', '))
       mk('u−v', data.diff.map(n=>Number(n).toFixed(6)).join(', '))
-      mk('u·v', Number(data.dot).toFixed(6))
-      mk('u×v (z)', Number(data.cross).toFixed(6))
+      mk('u·v (producto punto)', Number(data.dot).toFixed(6))
+      mk('u×v (producto cruz)', Number(data.cross).toFixed(6))
       const layout = Object.assign({}, data.plotSpec.layout, { dragmode: false, autosize: true })
       const config = { displayModeBar:false, scrollZoom:false, doubleClick:false, staticPlot:false, responsive:true }
       Plotly.newPlot('vec-plot', data.plotSpec.data, layout, config)
       disableSelectionOnPlot()
+    }catch(e){ $('#vec-error').textContent = e.message }
+  }
+  
+  $('#vec-dot').onclick = async ()=>{
+    $('#vec-error').textContent = ''
+    try{
+      const data = await postJSON('/api/vectors/calc', { inputMode: state.vec.mode, v1: state.vec.u, v2: state.vec.v, show: state.vec.show })
+      const out = $('#vec-numbers')
+      out.innerHTML = ''
+      const result = document.createElement('div')
+      result.style.fontSize = '18px'
+      result.style.fontWeight = 'bold'
+      result.textContent = `Producto punto u·v = ${Number(data.dot).toFixed(6)}`
+      out.appendChild(result)
+    }catch(e){ $('#vec-error').textContent = e.message }
+  }
+  
+  $('#vec-cross').onclick = async ()=>{
+    $('#vec-error').textContent = ''
+    try{
+      const data = await postJSON('/api/vectors/calc', { inputMode: state.vec.mode, v1: state.vec.u, v2: state.vec.v, show: state.vec.show })
+      const out = $('#vec-numbers')
+      out.innerHTML = ''
+      const result = document.createElement('div')
+      result.style.fontSize = '18px'
+      result.style.fontWeight = 'bold'
+      result.textContent = `Producto cruz u×v = ${Number(data.cross).toFixed(6)}`
+      out.appendChild(result)
     }catch(e){ $('#vec-error').textContent = e.message }
   }
 }

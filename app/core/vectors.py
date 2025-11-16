@@ -141,34 +141,38 @@ def plot_data(u: np.ndarray, v: np.ndarray, show: Dict[str, Any]):
             })
 
     def arrow(x0, y0, x1, y1, text, color="black", width=2):
-        """Create a vector arrow with proper arrowhead and proportions"""
-        # Calculate vector length for proportional sizing
+        """Create a vector arrow with proper arrowhead"""
+        # Calculate vector length
         vec_length = math.sqrt((x1-x0)**2 + (y1-y0)**2)
         
-        # Arrowhead size proportional to vector length (min 8, max 20)
-        arrow_size = max(8, min(20, vec_length * 0.3))
+        if vec_length < 1e-9:
+            # Don't draw zero-length vectors
+            return
         
-        # Main vector line
-        data.append({
-            "type": "scatter",
-            "mode": "lines",
-            "x": [x0, x1],
-            "y": [y0, y1],
-            "line": {"color": color, "width": width}
-        })
+        # Arrowhead size proportional to vector length
+        arrow_size = max(0.8, min(2.0, vec_length * 0.15))
         
-        # Arrow annotation with improved styling
+        # Arrow annotation with proper arrowhead
         annotations.append({
-            "ax": x0, "ay": y0, "x": x1, "y": y1,
+            "ax": x0, 
+            "ay": y0, 
+            "x": x1, 
+            "y": y1,
+            "xref": "x",
+            "yref": "y",
+            "axref": "x",
+            "ayref": "y",
             "showarrow": True, 
-            "arrowhead": 3,  # Closed arrowhead
-            "arrowsize": arrow_size / 15,  # Proportional to vector length
+            "arrowhead": 2,
+            "arrowsize": arrow_size,
             "arrowwidth": width,
             "arrowcolor": color,
             "text": text, 
             "xanchor": "left", 
             "yanchor": "bottom",
-            "font": {"size": 12, "color": color}
+            "font": {"size": 12, "color": color},
+            "bgcolor": "rgba(255,255,255,0.7)",
+            "borderpad": 2
         })
 
     # Always show main vectors u and v
