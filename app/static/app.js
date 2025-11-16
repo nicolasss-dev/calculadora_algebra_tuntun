@@ -165,11 +165,32 @@ function buildLin(){
   const eqSystem = document.getElementById('eq-system');
   eqSystem.innerHTML = '';
 
-  // Llave grande
-  const brace = document.createElement('div');
-  brace.className = 'eq-brace';
-  brace.textContent = '{';
-  eqSystem.appendChild(brace);
+  // Llave SVG con varios ganchos arriba y abajo
+  const braceHeight = 38 * n + 10;
+  const braceSVG = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  braceSVG.setAttribute('width', '32');
+  braceSVG.setAttribute('height', braceHeight);
+  braceSVG.setAttribute('viewBox', `0 0 32 ${braceHeight}`);
+  braceSVG.classList.add('eq-brace-svg');
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  // Parámetros para la llave
+  const xLeft = 10, xRight = 28;
+  const yTop = 5, yBot = braceHeight-5;
+  const yMid = braceHeight/2;
+  const yHook = 18;
+  // Path para la llave con ganchos arriba, abajo y piquito central
+  const yPico = 16;
+  const d = `M ${xRight} ${yTop}
+    C ${xLeft} ${yTop}, ${xLeft} ${yTop+yHook}, ${xLeft} ${yMid-yPico}
+    Q ${xLeft-8} ${yMid}, ${xLeft} ${yMid+yPico}
+    C ${xLeft} ${yBot-yHook}, ${xLeft} ${yBot}, ${xRight} ${yBot}`;
+  path.setAttribute('d', d);
+  path.setAttribute('stroke', 'var(--color-accent)');
+  path.setAttribute('stroke-width', '6');
+  path.setAttribute('fill', 'none');
+  path.setAttribute('stroke-linecap', 'round');
+  braceSVG.appendChild(path);
+  eqSystem.appendChild(braceSVG);
 
   // Filas de ecuaciones
   const rows = document.createElement('div');
@@ -237,14 +258,32 @@ async function postJSON(url, body){
   return data
 }
 
+
 function tabSwitch(){
-  $$('.tab').forEach(btn=> btn.addEventListener('click', ()=>{
-    $$('.tab').forEach(b=> b.classList.remove('active'))
-    btn.classList.add('active')
-    const t = btn.dataset.tab
-    $$('.panel').forEach(p=> p.classList.remove('active'))
-    $('#'+t).classList.add('active')
-  }))
+  const tabs = $$('.pill-tab');
+  const indicator = $('.pill-indicator');
+  function moveIndicator(activeTab) {
+    const nav = activeTab.parentElement;
+    const rect = activeTab.getBoundingClientRect();
+    const navRect = nav.getBoundingClientRect();
+    indicator.style.left = (rect.left - navRect.left) + 'px';
+    indicator.style.width = rect.width + 'px';
+  }
+  tabs.forEach(btn=> btn.addEventListener('click', ()=>{
+    tabs.forEach(b=> b.classList.remove('active'));
+    btn.classList.add('active');
+    moveIndicator(btn);
+    const t = btn.dataset.tab;
+    $$('.panel').forEach(p=> p.classList.remove('active'));
+    $('#'+t).classList.add('active');
+  }));
+  // Inicializar posición del indicador
+  const activeTab = tabs.find(tab => tab.classList.contains('active'));
+  if(activeTab) moveIndicator(activeTab);
+  window.addEventListener('resize', ()=>{
+    const activeTab = tabs.find(tab => tab.classList.contains('active'));
+    if(activeTab) moveIndicator(activeTab);
+  });
 }
 
 function setupMatrixControls(){
