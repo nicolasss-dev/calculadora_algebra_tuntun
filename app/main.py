@@ -92,6 +92,12 @@ def index():
         return f.read()
 
 
+@app.get("/health")
+def health():
+    """Endpoint de salud para Render/monitoreo."""
+    return {"status": "ok"}
+
+
 @app.post("/api/matrix/operate")
 def matrix_operate(payload: MatrixOperateRequest):
     """Ejecuta operaciones matriciales sobre A y B.
