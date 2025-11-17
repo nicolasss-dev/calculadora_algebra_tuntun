@@ -22,11 +22,7 @@ function createMathMLMatrix(values, interactive = false, key = null) {
   const math = document.createElementNS(mathNS, 'math');
   math.setAttribute('display', 'block');
 
-<<<<<<< HEAD
   // Detecta tamaño de matriz para estilo responsivo
-=======
- 
->>>>>>> 9b28fc1 (Corregir vector de resta u-v para que salga desde el origen en el gráfico de vectores)
   const isSmall = values.length <= 5 && values[0]?.length <= 5;
 
   if (isSmall) {
@@ -35,11 +31,7 @@ function createMathMLMatrix(values, interactive = false, key = null) {
 
   const mrow = document.createElementNS(mathNS, 'mrow');
 
-<<<<<<< HEAD
   // Paréntesis de apertura
-=======
-
->>>>>>> 9b28fc1 (Corregir vector de resta u-v para que salga desde el origen en el gráfico de vectores)
   const mo1 = document.createElementNS(mathNS, 'mo');
   mo1.textContent = '(';
   mo1.setAttribute('stretchy', 'true');
